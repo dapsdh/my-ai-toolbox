@@ -2,8 +2,8 @@
 
 ## 입력
 
-- `https://hancom.atlassian.net/issues/?filter=12345 요약해줘`
-- `https://hancom.atlassian.net/issues/?filter=12345` (에이전트가 "요약해줘" 컨텍스트로 실행)
+- `https://example.atlassian.net/issues/?filter=12345 요약해줘`
+- `https://example.atlassian.net/issues/?filter=12345` (에이전트가 "요약해줘" 컨텍스트로 실행)
 
 ## 출력 예시
 
@@ -19,4 +19,4 @@
  - 코드 커밋: 2 commits, branch feature/PROJ-102, pushed to main. | 1 commit, branch hotfix/PROJ-102.
 ```
 
-GitLab에서 push 시 Jira에 남는 코멘트는 작성자가 **Gitlab.hancom.io** 등으로 등록되어 있어, 위와 같이 "코드 커밋" 항목에만 모아서 표시된다.
+GitLab에서 push 시 Jira에 남는 코멘트는 작성자가 **GitLab**(e.g. gitlab.example.com) 등으로 등록되어 있어, 위와 같이 "코드 커밋" 항목에만 모아서 표시된다.

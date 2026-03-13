@@ -3,7 +3,7 @@
 ## 예시 1: URL로 요청
 
 **사용자**:  
-`https://hancom.atlassian.net/browse/HCDOQ-1313` 이 이슈 내용 정리해줘
+`https://example.atlassian.net/browse/HCDOQ-1313` 이 이슈 내용 정리해줘
 
 **에이전트**:
 1. `mcp_web_fetch`로 URL fetch 시도
@@ -44,7 +44,7 @@ Description:
 ## 예시 4: Confluence — 해당 페이지만 요약
 
 **사용자**:  
-`https://hancom.atlassian.net/wiki/.../pages/1997013274/M11+document+retrieval` 요약해줘
+`https://example.atlassian.net/wiki/.../pages/1997013274/M11+document+retrieval` 요약해줘
 
 **에이전트**:  
 `fetch_confluence_page.py <URL>` 실행(옵션 없음) → 해당 페이지만 가져와 요약·정리.
@@ -54,7 +54,7 @@ Description:
 ## 예시 5: Confluence — 하위 페이지(폴더)까지 모두 요약
 
 **사용자**:  
-`https://hancom.atlassian.net/wiki/.../pages/1997013274/M11+document+retrieval` **하위 페이지까지** 요약해줘
+`https://example.atlassian.net/wiki/.../pages/1997013274/M11+document+retrieval` **하위 페이지까지** 요약해줘
 
 **에이전트**:  
 `fetch_confluence_page.py <URL> --with-children` 실행 → 본문 + **직접 하위 + 그 하위의 하위 + …** 를 재귀적으로 모두 가져온 뒤, 계층 구조를 유지한 채 본문 요약 + 각 페이지별 요약을 구분해 정리.

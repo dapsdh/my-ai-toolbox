@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 Google 폼 URL(또는 폼 ID)을 받아 Forms API로 폼 정보와 응답 목록을 조회해 포맷된 텍스트로 출력.
-- .env: GOOGLE_APPLICATION_CREDENTIALS(서비스 계정 JSON 경로) 또는
-  GOOGLE_REFRESH_TOKEN, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+- 환경 변수: 프로젝트 루트(.ai)의 .env — GOOGLE_APPLICATION_CREDENTIALS 또는 GOOGLE_REFRESH_TOKEN+CLIENT_ID+CLIENT_SECRET
 - 폼은 서비스 계정 이메일과 공유되어 있어야 함.
 """
 import json
@@ -12,23 +11,21 @@ import sys
 import urllib.parse
 from pathlib import Path
 
-# .env 로드: .cursor/skills/google-forms-viewer/.env → 프로젝트 루트
 def _load_dotenv():
     base = Path(__file__).resolve().parent
-    skill_dir = base.parent  # google-forms-viewer
-    for d in [skill_dir, skill_dir.parent.parent]:  # .cursor/skills, 프로젝트 루트
-        env = d / ".env"
-        if env.is_file():
-            for line in env.read_text(encoding="utf-8", errors="ignore").splitlines():
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                if "=" in line:
-                    k, v = line.split("=", 1)
-                    k, v = k.strip(), v.strip().strip('"').strip("'")
-                    if k and v and k not in os.environ:
-                        os.environ[k] = v
-            break
+    skill_dir = base.parent
+    root = skill_dir.parent.parent
+    env_path = root / ".env"
+    if env_path.is_file():
+        for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" in line:
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k and v and k not in os.environ:
+                    os.environ[k] = v
 
 
 _load_dotenv()
@@ -135,7 +132,7 @@ def main():
     creds = _get_credentials()
     if not creds:
         print(
-            ".env에 Google 인증 정보를 설정해 주세요.\n"
+            "프로젝트 루트(.ai)의 .env에 Google 인증 정보를 설정해 주세요.\n"
             "  - GOOGLE_APPLICATION_CREDENTIALS: 서비스 계정 JSON 파일 경로 (폼을 해당 계정과 공유)\n"
             "  또는\n"
             "  - GOOGLE_REFRESH_TOKEN, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET",

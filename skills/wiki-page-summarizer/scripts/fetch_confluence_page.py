@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Confluence 페이지를 REST API로 조회 (Basic auth: 이메일 + API 토큰).
-환경 변수: ATLASSIAN_BASE_URL(또는 CONFLUENCE_BASE_URL), ATLASSIAN_USER, ATLASSIAN_API_TOKEN
+환경 변수: 프로젝트 루트(.ai)의 .env — ATLASSIAN_BASE_URL, ATLASSIAN_USER, ATLASSIAN_API_TOKEN
 사용법:
   fetch_confluence_page.py <페이지ID 또는 URL>
     → 해당 페이지만 가져옴.
@@ -19,13 +19,13 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 
-# .env 로드: 이 스킬 디렉터리의 .env
 def _load_dotenv():
     base = Path(__file__).resolve().parent
-    skill_dir = base.parent  # 스킬 루트 (scripts/ 의 상위)
-    env = skill_dir / ".env"
-    if env.is_file():
-        for line in env.read_text(encoding="utf-8", errors="ignore").splitlines():
+    skill_dir = base.parent
+    root = skill_dir.parent.parent
+    env_path = root / ".env"
+    if env_path.is_file():
+        for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
@@ -37,7 +37,7 @@ def _load_dotenv():
 
 _load_dotenv()
 
-BASE = (os.environ.get("CONFLUENCE_BASE_URL") or os.environ.get("ATLASSIAN_BASE_URL") or "https://hancom.atlassian.net").rstrip("/")
+BASE = (os.environ.get("ATLASSIAN_BASE_URL") or "").rstrip("/")
 WIKI_BASE = f"{BASE}/wiki" if "/wiki" not in BASE else BASE
 USER = os.environ.get("ATLASSIAN_USER", "").strip()
 TOKEN = os.environ.get("ATLASSIAN_API_TOKEN", "").strip()

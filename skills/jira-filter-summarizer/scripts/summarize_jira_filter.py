@@ -2,8 +2,8 @@
 """
 Jira 필터 결과를 REST API로 조회해 이슈별로 요약 출력.
 - 필터 URL 또는 필터 ID 입력 → JQL 조회 → 이슈 목록 → 이슈별 설명·코멘트 조회
-- Gitlab.hancom.io(및 GitLab 봇)가 작성한 코멘트는 '코드 커밋'으로, 나머지는 '코멘트'로 구분.
-환경 변수: ATLASSIAN_BASE_URL, ATLASSIAN_USER(이메일), ATLASSIAN_API_TOKEN 또는 이 스킬의 .env
+- GitLab(및 동일 봇, e.g. gitlab.example.com)가 작성한 코멘트는 '코드 커밋'으로, 나머지는 '코멘트'로 구분.
+환경 변수: 프로젝트 루트(.ai)의 .env — ATLASSIAN_BASE_URL, ATLASSIAN_USER(이메일), ATLASSIAN_API_TOKEN
 """
 import json
 import os
@@ -16,13 +16,13 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
-# .env 로드: 이 스킬 디렉터리의 .env
 def _load_dotenv():
     base = Path(__file__).resolve().parent
-    skill_dir = base.parent  # 스킬 루트 (scripts/ 의 상위)
-    env = skill_dir / ".env"
-    if env.is_file():
-        for line in env.read_text(encoding="utf-8", errors="ignore").splitlines():
+    skill_dir = base.parent
+    root = skill_dir.parent.parent
+    env_path = root / ".env"
+    if env_path.is_file():
+        for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
@@ -34,12 +34,14 @@ def _load_dotenv():
 
 _load_dotenv()
 
-ATLASSIAN_BASE = (os.environ.get("ATLASSIAN_BASE_URL") or "https://hancom.atlassian.net").rstrip("/")
+
+ATLASSIAN_BASE = (os.environ.get("ATLASSIAN_BASE_URL") or "").rstrip("/")
 ATLASSIAN_USER = os.environ.get("ATLASSIAN_USER", "").strip()
 ATLASSIAN_TOKEN = os.environ.get("ATLASSIAN_API_TOKEN", "").strip()
 
-# GitLab 봇 식별: 작성자 이름에 다음이 포함되면 코드 커밋으로 분류
-GITLAB_BOT_NAMES = ("gitlab.hancom.io", "gitlab", "gitlab-hancom")
+# GitLab 봇 식별: COMMIT_AUTHOR_NAMES(쉼표 구분). 설정하지 않으면 코드 커밋으로 분류할 봇 없음
+_raw = (os.environ.get("COMMIT_AUTHOR_NAMES") or "").strip()
+GITLAB_BOT_NAMES = [x.strip() for x in _raw.split(",") if x.strip()]
 
 # 설명/코멘트 여러 줄 포맷 시 사용할 너비
 WRAP_WIDTH = 88

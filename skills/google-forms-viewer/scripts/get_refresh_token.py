@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 OAuth 2.0 인증 코드 흐름으로 리프레시 토큰을 발급받아 출력합니다.
-한 번만 실행해 .env의 GOOGLE_REFRESH_TOKEN에 넣으면 됩니다.
+한 번만 실행해 프로젝트 루트(.ai)의 .env에 GOOGLE_REFRESH_TOKEN을 넣으면 됩니다.
 
 사용 전:
   1. Google Cloud 프로젝트에서 OAuth 2.0 클라이언트 ID(데스크톱 앱) 생성
@@ -14,23 +14,21 @@ import os
 import sys
 from pathlib import Path
 
-# .env 로드
 def _load_dotenv():
     base = Path(__file__).resolve().parent
     skill_dir = base.parent
-    for d in [skill_dir, skill_dir.parent.parent]:
-        env = d / ".env"
-        if env.is_file():
-            for line in env.read_text(encoding="utf-8", errors="ignore").splitlines():
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                if "=" in line:
-                    k, v = line.split("=", 1)
-                    k, v = k.strip(), v.strip().strip('"').strip("'")
-                    if k and v and k not in os.environ:
-                        os.environ[k] = v
-            break
+    root = skill_dir.parent.parent
+    env_path = root / ".env"
+    if env_path.is_file():
+        for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" in line:
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k and v and k not in os.environ:
+                    os.environ[k] = v
 
 
 _load_dotenv()
@@ -46,8 +44,7 @@ def main():
     client_secret = os.environ.get("GOOGLE_CLIENT_SECRET", "").strip()
     if not client_id or not client_secret:
         print(
-            "GOOGLE_CLIENT_ID와 GOOGLE_CLIENT_SECRET을 설정한 뒤 실행하세요.\n"
-            "예: set GOOGLE_CLIENT_ID=xxx & set GOOGLE_CLIENT_SECRET=yyy & python get_refresh_token.py\n"
+            "프로젝트 루트(.ai)의 .env에 GOOGLE_CLIENT_ID와 GOOGLE_CLIENT_SECRET을 설정한 뒤 실행하세요.\n"
             "자세한 방법은 REFRESH_TOKEN.md를 참고하세요.",
             file=sys.stderr,
         )

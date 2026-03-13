@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 GitLab MR URL을 받아 API로 merge request changes(diff)를 조회해 출력.
-- .env: GITLAB_PRIVATE_TOKEN 또는 GITLAB_ACCESS_TOKEN, 선택 GITLAB_HOST
-- MR URL 예: https://gitlab.hancom.io/platform-api/chatbot/frontend-lib/-/merge_requests/23/diffs
+- 환경 변수: 프로젝트 루트(.ai)의 .env — GITLAB_PRIVATE_TOKEN 또는 GITLAB_ACCESS_TOKEN, 선택 GITLAB_HOST
+- MR URL 예: https://gitlab.example.com/group/project/-/merge_requests/23/diffs
 """
 import json
 import os
@@ -20,23 +20,21 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-# .env 로드: .cursor/skills/gitlab-mr-code-review/.env → 프로젝트 루트
 def _load_dotenv():
     base = Path(__file__).resolve().parent
     skill_dir = base.parent
-    for d in [skill_dir, skill_dir.parent.parent]:
-        env = d / ".env"
-        if env.is_file():
-            for line in env.read_text(encoding="utf-8", errors="ignore").splitlines():
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                if "=" in line:
-                    k, v = line.split("=", 1)
-                    k, v = k.strip(), v.strip().strip('"').strip("'")
-                    if k and v and k not in os.environ:
-                        os.environ[k] = v
-            break
+    root = skill_dir.parent.parent
+    env_path = root / ".env"
+    if env_path.is_file():
+        for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            if "=" in line:
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k and v and k not in os.environ:
+                    os.environ[k] = v
 
 
 _load_dotenv()
@@ -87,12 +85,12 @@ def main():
 
     base_url, project_path, mr_iid = _parse_mr_url(sys.argv[1])
     if not base_url or not project_path or not mr_iid:
-        print("올바른 GitLab MR URL이 아닙니다. 예: https://gitlab.hancom.io/group/project/-/merge_requests/23", file=sys.stderr)
+        print("올바른 GitLab MR URL이 아닙니다. 예: https://gitlab.example.com/group/project/-/merge_requests/23", file=sys.stderr)
         sys.exit(1)
 
     if not GITLAB_TOKEN:
         print(
-            ".env에 GITLAB_PRIVATE_TOKEN 또는 GITLAB_ACCESS_TOKEN을 설정해 주세요.",
+            "프로젝트 루트(.ai)의 .env에 GITLAB_PRIVATE_TOKEN 또는 GITLAB_ACCESS_TOKEN을 설정해 주세요.",
             file=sys.stderr,
         )
         sys.exit(1)

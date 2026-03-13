@@ -7,12 +7,13 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from base64 import b64encode
 
-# .env 로드: 이 스킬 디렉터리의 .env
+# .env 로드: 프로젝트 루트(.ai)만
 base = Path(__file__).resolve().parent
-skill_dir = base.parent  # 스킬 루트 (scripts/ 의 상위)
-env = skill_dir / ".env"
-if env.is_file():
-    for line in env.read_text(encoding="utf-8", errors="ignore").splitlines():
+skill_dir = base.parent
+root = skill_dir.parent.parent
+env_path = root / ".env"
+if env_path.is_file():
+    for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
         line = line.strip()
         if line and not line.startswith("#") and "=" in line:
             k, v = line.split("=", 1)
@@ -20,7 +21,7 @@ if env.is_file():
             if k and v and k not in os.environ:
                 os.environ[k] = v
 
-BASE = os.environ.get("ATLASSIAN_BASE_URL", "https://hancom.atlassian.net").rstrip("/")
+BASE = (os.environ.get("ATLASSIAN_BASE_URL") or "").rstrip("/")
 WIKI = BASE + "/wiki" if "/wiki" not in BASE else BASE
 USER = os.environ.get("ATLASSIAN_USER", "").strip()
 TOKEN = os.environ.get("ATLASSIAN_API_TOKEN", "").strip()

@@ -1,6 +1,6 @@
 ---
 name: gitlab-mr-code-review
-description: Accepts a GitLab merge request URL and "코드 리뷰 해줘", then fetches the MR metadata and diffs via GitLab API using .env credentials and performs a structured code review. Use when the user pastes a GitLab MR link (e.g. gitlab.hancom.io/.../merge_requests/23/diffs) and asks for a code review ("코드 리뷰 해줘", "리뷰해줘").
+description: Accepts a GitLab merge request URL and "코드 리뷰 해줘", then fetches the MR metadata and diffs via GitLab API using .env credentials and performs a structured code review. Use when the user pastes a GitLab MR link (e.g. gitlab.example.com/.../merge_requests/23/diffs) and asks for a code review ("코드 리뷰 해줘", "리뷰해줘").
 ---
 
 # GitLab MR 코드 리뷰
@@ -13,20 +13,18 @@ description: Accepts a GitLab merge request URL and "코드 리뷰 해줘", then
 |------------------|------|
 | **\<GitLab MR URL\> 코드 리뷰 해줘** / 리뷰해줘 / 리뷰 부탁해 | MR URL에서 호스트·프로젝트·MR 번호를 추출해 diff를 가져온 뒤, 코드 리뷰를 수행해 아래 포맷으로 출력한다. |
 
-예: `https://gitlab.hancom.io/platform-api/chatbot/frontend-lib/-/merge_requests/23/diffs 코드 리뷰 해줘`
+예: `https://gitlab.example.com/platform-api/chatbot/frontend-lib/-/merge_requests/23/diffs 코드 리뷰 해줘`
 
 ## 인증
 
-- GitLab 인증용 `.env`는 **`.cursor/skills/gitlab-mr-code-review/.env`** 에 둔다. (없으면 프로젝트 루트 `.env` 사용)
-- 필수: `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN`. (Private/Personal Access Token)
-- 선택: `GITLAB_HOST`. URL에 호스트가 있으면 자동 추출하므로, self-hosted 기본값이 필요할 때만 설정.
-- 인증이 없으면 ".env에 GITLAB_PRIVATE_TOKEN(또는 GITLAB_ACCESS_TOKEN)을 설정해 주세요" 안내.
+- GitLab 인증은 **프로젝트 루트(.ai)의 `.env`**에서 로드한다. 루트의 `.env.example`을 참고해 루트에 `.env`를 두고 `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN`, (선택) `GITLAB_HOST`를 채운다.
+- 인증이 없으면 "프로젝트 루트(.ai)의 .env에 GITLAB_PRIVATE_TOKEN(또는 GITLAB_ACCESS_TOKEN)을 설정해 주세요" 안내.
 
 ## 워크플로
 
 1. **URL에서 호스트·프로젝트·MR 번호 추출**  
-   - `https://gitlab.hancom.io/group/subgroup/project/-/merge_requests/23` 또는 `.../merge_requests/23/diffs` 형태에서  
-     호스트(`gitlab.hancom.io`), 프로젝트 경로(`group/subgroup/project`), MR IID(`23`) 추출.
+   - `https://gitlab.example.com/group/subgroup/project/-/merge_requests/23` 또는 `.../merge_requests/23/diffs` 형태에서  
+     호스트(`gitlab.example.com`), 프로젝트 경로(`group/subgroup/project`), MR IID(`23`) 추출.
 
 2. **MR diff 조회**  
    `python .cursor/skills/gitlab-mr-code-review/scripts/fetch_mr_diffs.py "<MR_URL>"` 를 실행한다.  
@@ -71,11 +69,11 @@ description: Accepts a GitLab merge request URL and "코드 리뷰 해줘", then
 스크립트는 Python 표준 라이브러리만 사용하므로 별도 패키지 설치가 필요 없다.
 
 ```bash
-python .cursor/skills/gitlab-mr-code-review/scripts/fetch_mr_diffs.py "https://gitlab.hancom.io/platform-api/chatbot/frontend-lib/-/merge_requests/23/diffs"
+python .cursor/skills/gitlab-mr-code-review/scripts/fetch_mr_diffs.py "https://gitlab.example.com/platform-api/chatbot/frontend-lib/-/merge_requests/23/diffs"
 ```
 
 성공 시: 표준 출력에 MR 제목·설명·변경 파일별 diff가 출력된다. 에이전트는 이 내용을 바탕으로 코드 리뷰를 작성한다.  
-실패 시: stderr에 오류 메시지, exit code 1. 인증 실패 시 사용자에게 .env 설정 안내.
+실패 시: stderr에 오류 메시지, exit code 1. 인증 실패 시 사용자에게 루트 .env 설정 안내.
 
 ## 요약
 

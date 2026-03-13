@@ -3,7 +3,7 @@
 ## 예시 1: 문제 코드 찾기 요청
 
 **사용자**:  
-`https://hancom.atlassian.net/browse/API-42 문제코드를 찾아줘`
+`https://example.atlassian.net/browse/API-42 문제코드를 찾아줘`
 
 **에이전트**:
 1. `fetch_jira_issue.py API-42` 실행으로 이슈 설명 조회
@@ -17,7 +17,7 @@
 ## 예시 2: 디버깅 요청
 
 **사용자**:  
-`https://hancom.atlassian.net/browse/SVC-100 디버깅해줘`
+`https://example.atlassian.net/browse/SVC-100 디버깅해줘`
 
 **에이전트**:  
 위와 동일한 워크플로(이슈 조회 → 분석 → 수정 필요 시 코드 검색 → 수정 제안 또는 "버그 분석 실패").
@@ -27,7 +27,7 @@
 ## 예시 3: 수정이 필요 없는 경우
 
 **사용자**:  
-`https://hancom.atlassian.net/browse/DOC-1 문제코드를 찾아줘`
+`https://example.atlassian.net/browse/DOC-1 문제코드를 찾아줘`
 
 **에이전트**:  
 이슈 설명 확인 결과 "문서 오타 수정 요청"으로 판단 → "코드 수정이 필요한 버그가 아니라 문서 내용 수정 요청입니다. 코드베이스가 아닌 문서(Confluence/README 등)를 수정하면 됩니다." 등 **수정이 필요 없는 이유**를 설명.
