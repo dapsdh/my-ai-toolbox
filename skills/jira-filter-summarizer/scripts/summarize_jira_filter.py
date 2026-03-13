@@ -43,10 +43,15 @@ ATLASSIAN_TOKEN = os.environ.get("ATLASSIAN_API_TOKEN", "").strip()
 _raw = (os.environ.get("COMMIT_AUTHOR_NAMES") or "").strip()
 GITLAB_BOT_NAMES = [x.strip() for x in _raw.split(",") if x.strip()]
 
-# 설명/코멘트 여러 줄 포맷 시 사용할 너비
-WRAP_WIDTH = 88
-COMMENT_BODY_MAX = 200
-CODE_COMMIT_BODY_MAX = 280
+# 출력 형식(examples.md): 설명은 여러 줄(이어쓰기 4칸), 코멘트/코드커밋은 [n] (작성자) 본문 항목별 출력
+DESC_WRAP_WIDTH = 84
+DESC_MAX_CHARS = 600
+COMMENT_BODY_WIDTH = 72
+COMMENT_CONTINUATION_INDENT = "       "
+CODE_COMMIT_BODY_WIDTH = 78
+COMMIT_CONTINUATION_INDENT = "       "
+COMMENT_BODY_MAX_CHARS = 350
+CODE_COMMIT_BODY_MAX_CHARS = 400
 
 # @멘션 → 이름만 표시. 이메일(a@b.com) 제외: 이름 다음이 ". "(마침표+공백), 공백, 쉼표, 괄호, 끝일 때만 치환
 _MENTION_PATTERN = re.compile(r"@([가-힣a-zA-Z0-9_]+)(?=\.\s|[\s,\)\]\}]|$)")
@@ -185,70 +190,89 @@ def get_comments(key: str) -> list:
     return comments
 
 
-def _wrap_block(label: str, body: str, width: int = WRAP_WIDTH, max_chars: int = 0) -> list:
-    """한 문단을 여러 줄로 감싸서, 첫 줄에 label을 붙이고 이어서 들여쓰기된 줄들을 반환."""
-    lines = []
-    text = (body or "").strip()
-    if not text:
-        return [f" - {label}: (없음)"]
-    if max_chars and len(text) > max_chars:
-        text = text[: max_chars - 4].rstrip() + "...."
-    wrapped = textwrap.wrap(text, width=width, drop_whitespace=True)
-    lines.append(f" - {label}: {wrapped[0]}" if wrapped else f" - {label}: (없음)")
-    for w in wrapped[1:]:
-        lines.append("    " + w)
-    return lines
+def _wrap_desc(text: str) -> list:
+    """설명을 DESC_WRAP_WIDTH 기준으로 줄바꿈. 공백/줄바꿈을 한 칸으로 정리 후 최대 DESC_MAX_CHARS."""
+    if not text or not text.strip():
+        return []
+    one = " ".join((text or "").split())
+    if len(one) > DESC_MAX_CHARS:
+        one = one[: DESC_MAX_CHARS - 3].rstrip() + "..."
+    return textwrap.wrap(one, width=DESC_WRAP_WIDTH, drop_whitespace=True)
+
+
+def _wrap_comment_body(body: str, max_chars: int = COMMENT_BODY_MAX_CHARS) -> list:
+    """코멘트 본문을 COMMENT_BODY_WIDTH 기준으로 줄바꿈. 최대 max_chars."""
+    if not body or not body.strip():
+        return []
+    one = " ".join(body.split())
+    if len(one) > max_chars:
+        one = one[: max_chars - 3].rstrip() + "..."
+    return textwrap.wrap(one, width=COMMENT_BODY_WIDTH, drop_whitespace=True)
+
+
+def _wrap_commit_body(body: str, max_chars: int = CODE_COMMIT_BODY_MAX_CHARS) -> list:
+    """코드 커밋 본문을 CODE_COMMIT_BODY_WIDTH 기준으로 줄바꿈."""
+    if not body or not body.strip():
+        return []
+    one = " ".join(body.split())
+    if len(one) > max_chars:
+        one = one[: max_chars - 3].rstrip() + "..."
+    return textwrap.wrap(one, width=CODE_COMMIT_BODY_WIDTH, drop_whitespace=True)
 
 
 def format_issue_block(key: str, summary: str, status: str, description: str, comments: list) -> str:
-    """한 이슈에 대한 출력 블록 생성. 설명은 여러 줄로, 코멘트는 항목별로 간략히 표시."""
+    """한 이슈에 대한 출력 블록 생성. examples.md 형식: 설명 여러 줄(4칸 이어쓰기), 코멘트/코드커밋 [n] 항목별."""
     lines = [f"[{key}] {summary} ({status})"]
 
-    # 설명: @멘션 → 이름만 표시 후 여러 줄로 감싸서 표시 (최대 600자)
-    desc_text = _normalize_mentions(description.strip() if description else "")
-    lines.extend(_wrap_block("설명", desc_text or "(없음)", max_chars=600))
+    # 설명: 첫 줄 " - 설명: ...", 이어지는 줄 "    ..."
+    desc_text = _normalize_mentions((description or "").strip())
+    wrapped = _wrap_desc(desc_text) if desc_text else []
+    if not wrapped:
+        lines.append(" - 설명: (없음)")
+    else:
+        lines.append(" - 설명: " + wrapped[0])
+        for w in wrapped[1:]:
+            lines.append("    " + w)
 
-    # 코멘트: @멘션 → 이름만 표시 후 항목별로 줄을 나누어 간략 표시
+    # 코멘트: " - 코멘트:" 다음에 "    [n] (작성자) 본문" 항목별, 본문 이어쓰기 "       "
     normal = [c for c in comments if not c["is_gitlab"]]
-    if normal:
+    if not normal:
+        lines.append(" - 코멘트: (없음)")
+    else:
         lines.append(" - 코멘트:")
         for i, c in enumerate(normal, 1):
-            body = _normalize_mentions((c["body"] or "").strip())
-            if len(body) > COMMENT_BODY_MAX:
-                body = body[: COMMENT_BODY_MAX - 4].rstrip() + "...."
+            body = _normalize_mentions((c.get("body") or "").strip())
             author = (c.get("author") or "").strip()
             prefix = f"    [{i}]"
             if author:
                 prefix += f" ({author})"
             prefix += " "
             if body:
-                sub = textwrap.wrap(body, width=WRAP_WIDTH - 6, drop_whitespace=True)
-                lines.append(prefix + (sub[0] if sub else ""))
-                for s in (sub[1:] or []):
-                    lines.append("       " + s)
+                body_lines = _wrap_comment_body(body)
+                if body_lines:
+                    lines.append(prefix + body_lines[0])
+                    for bl in body_lines[1:]:
+                        lines.append(COMMENT_CONTINUATION_INDENT + bl)
             else:
                 lines.append(prefix + "(내용 없음)")
-    else:
-        lines.append(" - 코멘트: (없음)")
 
-    # 코드 커밋: @멘션 → 이름만 표시 후 항목별로 줄을 나누어 간략 표시
+    # 코드 커밋: " - 코드 커밋:" 다음에 "    [n] 본문" 항목별, 이어쓰기 "       "
     gitlab_comments = [c for c in comments if c["is_gitlab"]]
-    if gitlab_comments:
+    if not gitlab_comments:
+        lines.append(" - 코드 커밋: (없음)")
+    else:
         lines.append(" - 코드 커밋:")
         for i, c in enumerate(gitlab_comments, 1):
-            body = _normalize_mentions((c["body"] or "").strip())
-            if len(body) > CODE_COMMIT_BODY_MAX:
-                body = body[: CODE_COMMIT_BODY_MAX - 4].rstrip() + "...."
+            body = _normalize_mentions((c.get("body") or "").strip())
             prefix = f"    [{i}] "
             if body:
-                sub = textwrap.wrap(body, width=WRAP_WIDTH - 6, drop_whitespace=True)
-                lines.append(prefix + (sub[0] if sub else ""))
-                for s in (sub[1:] or []):
-                    lines.append("       " + s)
+                body_lines = _wrap_commit_body(body)
+                if body_lines:
+                    lines.append(prefix + body_lines[0])
+                    for bl in body_lines[1:]:
+                        lines.append(COMMIT_CONTINUATION_INDENT + bl)
             else:
                 lines.append(prefix + "(내용 없음)")
-    else:
-        lines.append(" - 코드 커밋: (없음)")
 
     return "\n".join(lines)
 
