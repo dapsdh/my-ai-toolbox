@@ -7,6 +7,7 @@ Claude Code 전용 설정 디렉토리입니다.
 ```
 .claude/
 └── skills/                         # Claude Code 슬래시 커맨드 스킬
+    ├── git-commit/                 # /git-commit
     ├── gitlab-mr-code-review/      # /gitlab-mr-code-review
     ├── google-forms-viewer/        # /google-forms-viewer
     ├── jira-filter-summarizer/     # /jira-filter-summarizer
@@ -18,6 +19,7 @@ Claude Code 전용 설정 디렉토리입니다.
 
 | 커맨드 | 설명 |
 |--------|------|
+| `/git-commit` | 스테이징된 변경사항을 분석해 커밋 메시지를 자동 생성하고 커밋합니다. |
 | `/gitlab-mr-code-review` | GitLab MR URL을 받아 diff를 조회하고 코드 리뷰를 수행합니다. |
 | `/google-forms-viewer` | Google Forms URL을 받아 문항과 응답을 표시합니다. |
 | `/jira-filter-summarizer` | Jira 필터 URL을 받아 이슈 목록을 요약합니다. |
@@ -29,6 +31,7 @@ Claude Code 전용 설정 디렉토리입니다.
 각 스킬은 슬래시 커맨드로 호출합니다.
 
 ```
+/git-commit
 /gitlab-mr-code-review https://gitlab.example.com/.../merge_requests/23
 /jira-filter-summarizer https://example.atlassian.net/issues/?filter=12345
 /jira-issue-debug https://example.atlassian.net/browse/PROJ-123
