@@ -53,7 +53,7 @@ git rev-parse --abbrev-ref HEAD
 
 AskUserQuestion 도구로 아래와 같이 질문한다.
 
-- question: `커밋할 브랜치를 선택하세요 (새 브랜치: 이름 직접 입력 → issue/<입력값> 생성)`
+- question: `커밋할 브랜치를 선택하세요 (새 브랜치: Other > 이름 직접 입력 → issue/<입력값> 생성)`
 - options:
   1. label: `현재 브랜치 (<현재 브랜치명>)` — description: `<현재 브랜치명> 브랜치에 커밋합니다`
   2. label: `main` — description: `main 브랜치로 체크아웃 후 커밋합니다`
