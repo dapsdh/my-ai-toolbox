@@ -1,2 +1,10 @@
-# 루트 .env (Atlassian 등 공통 인증) — Git에 올리지 않음
+# 인증 정보 — Git에 올리지 않음
 .env
+
+# 플랫폼 skills/*/scripts/ — junction으로 shared/scripts/를 참조 (실제 파일은 shared/에서 관리)
+.claude/skills/*/scripts/
+.cursor/skills/*/scripts/
+
+# 플랫폼 .env.example — 하드링크로 shared/.env.example을 참조
+.claude/.env.example
+.cursor/.env.example

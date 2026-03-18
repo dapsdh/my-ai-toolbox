@@ -18,7 +18,7 @@ git clone https://github.com/dapsdh/my-ai-toolbox.git .ai
 
 ## 스킬 목록
 
-각 스킬은 플랫폼별 디렉토리(`.claude/skills/`, `.cursor/skills/`) 아래에 있으며, `SKILL.md`에 상세 워크플로가 정의되어 있습니다.
+각 스킬은 플랫폼별 디렉토리(`.claude/skills/`, `.cursor/skills/`) 아래에 있으며, `SKILL.md`에 상세 워크플로가 정의되어 있습니다. Python 스크립트와 `.env`는 `shared/`에서 공동 관리하고, 각 플랫폼에서 symlink로 참조합니다.
 
 ### jira-filter-summarizer
 
@@ -54,9 +54,9 @@ git clone https://github.com/dapsdh/my-ai-toolbox.git .ai
 
 ## 인증·환경 변수
 
-**환경 변수는 각 플랫폼 디렉토리(`.claude/`, `.cursor/`)의 `.env`에서 관리합니다.**
+**환경 변수는 `shared/.env`에서 공동 관리합니다.** 각 플랫폼 디렉토리의 `.env`는 `shared/.env`에 대한 symlink입니다.
 
-- 플랫폼 디렉토리의 `.env.example`을 복사해 `.env`를 만든 뒤, 사용하는 스킬에 맞게 값을 채우면 됩니다.
+- `shared/.env.example`을 복사해 `shared/.env`를 만든 뒤, 사용하는 스킬에 맞게 값을 채우면 됩니다.
 - **Atlassian** (jira-filter-summarizer, wiki-page-summarizer, jira-issue-debug): `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN`, (선택) `COMMIT_AUTHOR_NAMES`
 - **GitLab** (git-mr-review): `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN`, (선택) `GITLAB_HOST`
 - **Google** (google-forms-viewer): `GOOGLE_APPLICATION_CREDENTIALS` 또는 OAuth용 `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`

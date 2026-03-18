@@ -17,7 +17,7 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
 def _load_dotenv():
-    base = Path(__file__).resolve().parent
+    base = Path(os.path.abspath(__file__)).parent
     skill_dir = base.parent
     root = skill_dir.parent.parent
     env_path = root / ".env"
