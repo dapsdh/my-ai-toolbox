@@ -10,7 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Environment Setup
 
-All credentials live in a single `.env` file at the repository root (never committed). Copy `.env.example` to `.env` and fill in:
+Credentials live in `.env` files under each platform directory (`.claude/`, `.cursor/`). Copy `.env.example` to `.env` in the respective directory and fill in:
 
 - `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN` — for Jira/Confluence skills
 - `GITLAB_PRIVATE_TOKEN` (or `GITLAB_ACCESS_TOKEN`), optionally `GITLAB_HOST` — for GitLab MR review
@@ -24,7 +24,7 @@ pip install google-api-python-client google-auth
 
 ## Skill Structure
 
-Skills are defined under `.claude/skills/<skill-name>/SKILL.md`. Each `SKILL.md` specifies the trigger phrase, step-by-step workflow, and output format for Claude to follow. Python scripts used by skills live in `skills/<skill-name>/scripts/` (the `skills/` directory at root is the canonical location).
+Skills are defined under each platform directory (`.claude/skills/`, `.cursor/skills/`). Each `SKILL.md` specifies the trigger phrase, step-by-step workflow, and output format for Claude to follow. Python scripts used by skills live in `<platform>/skills/<skill-name>/scripts/`.
 
 ### Available Skills
 
@@ -39,15 +39,15 @@ Skills are defined under `.claude/skills/<skill-name>/SKILL.md`. Each `SKILL.md`
 
 ## Architecture
 
-- **`.claude/skills/`** — SKILL.md definitions for Claude Code slash commands
-- **`skills/`** — Python scripts called by skills (no build step; run directly with `python`)
-- **Root `.env`** — Single source of credentials; each script navigates up from its location to find it via `_load_dotenv()`
+- **`.claude/`** — Claude Code platform: skills (SKILL.md + scripts), `.env`
+- **`.cursor/`** — Cursor platform: skills (SKILL.md + scripts), `.env`
+- Each platform's `.env` — credentials; scripts find it via `_load_dotenv()` navigating up from their location
 - Scripts use only Python stdlib (urllib) except `google-forms-viewer` which requires the Google client library
 
 ## Adding or Modifying Skills
 
-1. Create/update `SKILL.md` under `.claude/skills/<name>/` with trigger, workflow steps, and output format
-2. If a Python script is needed, place it in `skills/<name>/scripts/` and implement `_load_dotenv()` to load from root `.env`
+1. Create/update `SKILL.md` under `.claude/skills/<name>/` (or `.cursor/skills/<name>/`) with trigger, workflow steps, and output format
+2. If a Python script is needed, place it in the same skill's `scripts/` directory and implement `_load_dotenv()` to load from platform `.env`
 3. Ensure Windows UTF-8 compatibility if the script prints Unicode:
    ```python
    if sys.platform == "win32":

@@ -25,7 +25,7 @@ allowed-tools: Bash
    (예: `https://example.atlassian.net/issues/?filter=12345` → `12345`)
 
 2. **필터 JQL 조회**
-   `python skills/jira-filter-summarizer/scripts/summarize_jira_filter.py <필터_URL_또는_filter_ID>` 를 실행한다.
+   `python .claude/skills/jira-filter-summarizer/scripts/summarize_jira_filter.py <필터_URL_또는_filter_ID>` 를 실행한다.
    스크립트는 내부적으로:
    - `GET /rest/api/3/filter/{id}` 로 필터의 JQL을 가져오고
    - `GET /rest/api/3/search?jql=...` 로 이슈 목록을 조회한 뒤
@@ -60,9 +60,9 @@ allowed-tools: Bash
 ## 스크립트 사용
 
 ```bash
-python skills/jira-filter-summarizer/scripts/summarize_jira_filter.py "https://example.atlassian.net/issues/?filter=12345"
+python .claude/skills/jira-filter-summarizer/scripts/summarize_jira_filter.py "https://example.atlassian.net/issues/?filter=12345"
 # 또는
-python skills/jira-filter-summarizer/scripts/summarize_jira_filter.py 12345
+python .claude/skills/jira-filter-summarizer/scripts/summarize_jira_filter.py 12345
 ```
 
 성공 시: 표준 출력에 위 포맷의 요약이 이슈별로 출력된다.

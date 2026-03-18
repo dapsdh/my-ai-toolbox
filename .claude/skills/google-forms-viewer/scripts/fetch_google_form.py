@@ -11,6 +11,14 @@ import sys
 import urllib.parse
 from pathlib import Path
 
+# Windows 콘솔 UTF-8 출력 (cp949 인코딩 오류 방지)
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 def _load_dotenv():
     base = Path(__file__).resolve().parent
     skill_dir = base.parent

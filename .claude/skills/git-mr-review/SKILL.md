@@ -26,7 +26,7 @@ allowed-tools: Bash
 
 2. **MR diff 조회**
    ```bash
-   python skills/git-mr-review/scripts/fetch_mr_diffs.py "<MR_URL>"
+   python .claude/skills/git-mr-review/scripts/fetch_mr_diffs.py "<MR_URL>"
    ```
    스크립트는:
    - `GET /api/v4/projects/:id/merge_requests/:merge_request_iid/changes` 로 MR 메타데이터와 변경 파일 목록·diff 조회.

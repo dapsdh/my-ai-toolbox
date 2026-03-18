@@ -29,7 +29,7 @@ allowed-tools: Bash
 
 2. **스크립트 실행**
    ```bash
-   python skills/google-forms-viewer/scripts/fetch_google_form.py "<폼_URL_또는_폼_ID>"
+   python .claude/skills/google-forms-viewer/scripts/fetch_google_form.py "<폼_URL_또는_폼_ID>"
    ```
    스크립트는:
    - 프로젝트 루트(.ai)의 .env에서 인증 정보 로드 후 Google Forms API 호출.
