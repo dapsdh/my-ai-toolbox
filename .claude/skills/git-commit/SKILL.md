@@ -2,7 +2,7 @@
 name: git-commit
 description: Analyzes staged changes and automatically generates a commit message and commits. Use when the user wants to commit staged changes with an auto-generated message ("/git-commit", "커밋해줘", "커밋 메시지 만들어서 커밋해줘").
 argument-hint: "optional issue branch name (e.g. \"my-feature\" → branch \"issue/my-feature\")"
-allowed-tools: Bash
+allowed-tools: Bash, AskUserQuestion
 ---
 
 # 자동 커밋 메시지 생성 및 커밋
@@ -37,31 +37,48 @@ git rev-parse --is-inside-work-tree
 
 #### `issue-branch`가 있는 경우
 
-- 브랜치 이름을 `issue/<issue-branch>`로 설정한다.
+브랜치 이름을 `issue/<issue-branch>`로 설정한다. 사용자에게 아래 메시지를 출력한다.
+
+```
+대상 브랜치: issue/<issue-branch>
+```
 
 #### `issue-branch`가 없는 경우
 
-현재 브랜치를 확인한 뒤 그대로 사용한다.
+현재 브랜치를 확인한다.
 
 ```bash
 git rev-parse --abbrev-ref HEAD
 ```
 
-사용자에게 아래 메시지를 출력한다.
+AskUserQuestion 도구로 아래와 같이 질문한다.
 
-```
-현재 브랜치 '<현재 브랜치명>'에 커밋합니다
-```
+- question: `커밋할 브랜치를 선택하세요 (새 브랜치: 이름 직접 입력 → issue/<입력값> 생성)`
+- options:
+  1. label: `현재 브랜치 (<현재 브랜치명>)` — description: `<현재 브랜치명> 브랜치에 커밋합니다`
+  2. label: `main` — description: `main 브랜치로 체크아웃 후 커밋합니다`
 
-#### `issue-branch`가 있는 경우 (메시지 출력)
-
-브랜치 이름을 `issue/<issue-branch>`로 설정한 뒤 사용자에게 아래 메시지를 출력한다.
-
-```
-생성될 브랜치: issue/<issue-branch>
-```
+응답에 따라:
+- `현재 브랜치` 선택 → 현재 브랜치를 그대로 사용한다.
+- `main` 선택 → main 브랜치를 대상으로 설정한다.
+- Other로 텍스트 입력 → `issue/<입력값>`으로 브랜치 이름을 설정한다.
+  - 브랜치 존재 여부를 확인한다.
+    ```bash
+    git show-ref --verify --quiet refs/heads/issue/<입력값>
+    ```
+    - **이미 존재하면**: `브랜치 'issue/<입력값>'은 이미 존재합니다.` 메시지를 출력하고 **즉시 종료**한다.
+    - **존재하지 않으면**: 새로 생성 후 체크아웃한다.
+      ```bash
+      git checkout -b issue/<입력값>
+      ```
+      사용자에게 아래 메시지를 출력한다.
+      ```
+      대상 브랜치: issue/<입력값>
+      ```
 
 ### 2. 대상 브랜치 체크아웃 (없으면 생성)
+
+> 이 단계는 `$ARGUMENTS`로 브랜치가 지정된 경우에만 적용된다. New Branch 경로는 1단계에서 이미 처리되었으므로 건너뛴다.
 
 현재 브랜치와 대상 브랜치가 같으면 이 단계를 건너뛴다.
 
@@ -80,14 +97,22 @@ git show-ref --verify --quiet refs/heads/<브랜치명>
   ```
   사용자에게 `브랜치 '<브랜치명>'을 새로 생성했습니다.` 메시지를 출력한다.
 
-### 3. 스테이징 상태 확인
+### 3. 변경사항 스테이징 및 확인
+
+변경된 파일을 모두 스테이징한다.
+
+```bash
+git add -A
+```
+
+스테이징 상태를 확인한다.
 
 ```bash
 git status
 git diff --cached
 ```
 
-- 스테이징된 변경사항이 없으면 "커밋할 변경사항이 없습니다. `git add`로 파일을 스테이징하세요." 안내 후 종료.
+- 스테이징된 변경사항이 없으면 "커밋할 변경사항이 없습니다." 안내 후 종료.
 
 ### 4. 커밋 메시지 생성
 
