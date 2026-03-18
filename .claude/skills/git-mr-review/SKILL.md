@@ -1,5 +1,5 @@
 ---
-name: gitlab-mr-code-review
+name: git-mr-review
 description: Accepts a GitLab merge request URL, then fetches the MR metadata and diffs via GitLab API using .env credentials and performs a structured code review. Use when the user pastes a GitLab MR link (e.g. gitlab.example.com/.../merge_requests/23/diffs) and asks for a code review ("코드 리뷰 해줘", "리뷰해줘").
 argument-hint: <GitLab MR URL>
 allowed-tools: Bash
@@ -26,7 +26,7 @@ allowed-tools: Bash
 
 2. **MR diff 조회**
    ```bash
-   python skills/gitlab-mr-code-review/scripts/fetch_mr_diffs.py "<MR_URL>"
+   python skills/git-mr-review/scripts/fetch_mr_diffs.py "<MR_URL>"
    ```
    스크립트는:
    - `GET /api/v4/projects/:id/merge_requests/:merge_request_iid/changes` 로 MR 메타데이터와 변경 파일 목록·diff 조회.

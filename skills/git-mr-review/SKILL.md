@@ -1,5 +1,5 @@
 ---
-name: gitlab-mr-code-review
+name: git-mr-review
 description: Accepts a GitLab merge request URL and "코드 리뷰 해줘", then fetches the MR metadata and diffs via GitLab API using .env credentials and performs a structured code review. Use when the user pastes a GitLab MR link (e.g. gitlab.example.com/.../merge_requests/23/diffs) and asks for a code review ("코드 리뷰 해줘", "리뷰해줘").
 ---
 
@@ -27,7 +27,7 @@ description: Accepts a GitLab merge request URL and "코드 리뷰 해줘", then
      호스트(`gitlab.example.com`), 프로젝트 경로(`group/subgroup/project`), MR IID(`23`) 추출.
 
 2. **MR diff 조회**  
-   `python .cursor/skills/gitlab-mr-code-review/scripts/fetch_mr_diffs.py "<MR_URL>"` 를 실행한다.  
+   `python .cursor/skills/git-mr-review/scripts/fetch_mr_diffs.py "<MR_URL>"` 를 실행한다.  
    스크립트는:
    - `GET /api/v4/projects/:id/merge_requests/:merge_request_iid/changes` 로 MR 메타데이터와 변경 파일 목록·diff 조회.
    - 프로젝트 ID는 URL 인코딩된 프로젝트 경로(예: `platform-api%2Fchatbot%2Ffrontend-lib`).
@@ -69,7 +69,7 @@ description: Accepts a GitLab merge request URL and "코드 리뷰 해줘", then
 스크립트는 Python 표준 라이브러리만 사용하므로 별도 패키지 설치가 필요 없다.
 
 ```bash
-python .cursor/skills/gitlab-mr-code-review/scripts/fetch_mr_diffs.py "https://gitlab.example.com/platform-api/chatbot/frontend-lib/-/merge_requests/23/diffs"
+python .cursor/skills/git-mr-review/scripts/fetch_mr_diffs.py "https://gitlab.example.com/platform-api/chatbot/frontend-lib/-/merge_requests/23/diffs"
 ```
 
 성공 시: 표준 출력에 MR 제목·설명·변경 파일별 diff가 출력된다. 에이전트는 이 내용을 바탕으로 코드 리뷰를 작성한다.  

@@ -34,7 +34,7 @@ Skills are defined under `.claude/skills/<skill-name>/SKILL.md`. Each `SKILL.md`
 | `/jira-filter-summarizer` | `<filter URL> 요약해줘` | Summarizes all issues in a Jira filter |
 | `/wiki-page-summarizer` | `<page URL> 요약해줘` | Summarizes a Jira issue or Confluence page; add `하위 페이지까지` to recurse into child pages |
 | `/jira-issue-debug` | `<issue URL> 문제코드를 찾아줘` | Finds problem code in the codebase for a Jira bug |
-| `/gitlab-mr-code-review` | `<MR URL> 코드 리뷰 해줘` | Structured code review for a GitLab MR |
+| `/git-mr-review` | `<MR URL> 코드 리뷰 해줘` | Structured code review for a GitLab MR |
 | `/google-forms-viewer` | `<form URL> 접속해줘` | Displays Google Form questions and responses |
 
 ## Architecture

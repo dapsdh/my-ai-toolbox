@@ -44,7 +44,7 @@ git clone https://github.com/dapsdh/my-ai-toolbox.git .ai
 - **트리거 예**: `https://docs.google.com/forms/d/e/.../viewscore 접속해줘`
 - **인증**: 스킬 디렉터리 `.env`에 서비스 계정 JSON 경로 또는 OAuth 리프레시 토큰 등 설정. Google Cloud에서 Forms API 활성화 필요.
 
-### gitlab-mr-code-review
+### git-mr-review
 
 - **설명**: GitLab 머지 리퀘스트 URL과 "코드 리뷰 해줘"를 주면, GitLab API로 MR 메타데이터와 diff를 가져온 뒤 **구조화된 코드 리뷰**(로직·버그·보안·가독성·스타일 등)를 수행해 정리해서 보여 줍니다.
 - **트리거 예**: `https://gitlab.example.com/.../merge_requests/23/diffs 코드 리뷰 해줘`
@@ -58,6 +58,6 @@ git clone https://github.com/dapsdh/my-ai-toolbox.git .ai
 
 - 루트의 `.env.example`을 복사해 루트에 `.env`를 만든 뒤, 사용하는 스킬에 맞게 값을 채우면 됩니다.
 - **Atlassian** (jira-filter-summarizer, wiki-page-summarizer, jira-issue-debug): `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN`, (선택) `COMMIT_AUTHOR_NAMES`
-- **GitLab** (gitlab-mr-code-review): `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN`, (선택) `GITLAB_HOST`
+- **GitLab** (git-mr-review): `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN`, (선택) `GITLAB_HOST`
 - **Google** (google-forms-viewer): `GOOGLE_APPLICATION_CREDENTIALS` 또는 OAuth용 `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 - `.env`는 Git에 포함되지 않도록 되어 있으므로, 클론 후 사용 전에 직접 설정해야 합니다.
