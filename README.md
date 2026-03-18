@@ -14,6 +14,45 @@ git clone https://github.com/dapsdh/my-ai-toolbox.git .ai
 
 예: `d:\Projects`에서 실행 시 → `d:\Projects\.ai`에 클론됨.
 
+## 초기 설정
+
+클론 후 아래 두 단계를 1회 실행합니다.
+
+### 1. 환경 변수 설정
+
+```powershell
+copy shared\.env.example shared\.env
+# shared\.env 파일을 열어 필요한 인증 정보를 채우세요
+```
+
+### 2. 로컬 링크 복원
+
+`shared/`의 스크립트와 `.env`를 각 플랫폼(`.claude/`, `.cursor/`)에서 참조할 수 있도록 junction/하드링크를 생성합니다.
+
+```powershell
+.\setup.ps1
+```
+
+---
+
+## 스킬 설치
+
+전역(`~/.claude/` 등)이나 다른 프로젝트에 스킬을 설치합니다. `-Platform` 생략 시 `.claude` 스킬을 설치합니다.
+
+```powershell
+# .claude 전체 스킬을 전역에 설치
+.\install-skills.ps1 -Target global
+
+# 특정 스킬만 전역 설치
+.\install-skills.ps1 -Target global -Skills git-mr-review
+
+# .cursor 플랫폼 스킬을 전역에 설치
+.\install-skills.ps1 -Target global -Platform cursor
+
+# 특정 프로젝트에 설치
+.\install-skills.ps1 -Target D:\Projects\myapp -Skills git-mr-review,wiki-page-summarizer
+```
+
 ---
 
 ## 스킬 목록
