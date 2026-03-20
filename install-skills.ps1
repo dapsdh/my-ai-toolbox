@@ -6,6 +6,7 @@
   .\install-skills.ps1 -Target global                                         # .claude 전체 스킬을 전역에 설치
   .\install-skills.ps1 -Target global -Platform cursor                        # .cursor 전체 스킬을 전역에 설치
   .\install-skills.ps1 -Target global -Skills git-mr-review                   # 특정 스킬만 전역 설치
+  .\install-skills.ps1 -Target global -Skills git-mr-review -Force            # 이미 설치된 스킬을 강제 재설치
   .\install-skills.ps1 -Target D:\Projects\myapp                              # 특정 프로젝트에 설치
   .\install-skills.ps1 -Target D:\Projects\myapp -Platform cursor -Skills git-mr-review,wiki-page-summarizer
 #>
@@ -13,7 +14,8 @@ param(
     [string]$Target,
     [ValidateSet("claude", "cursor")]
     [string]$Platform = "claude",
-    [string[]]$Skills
+    [string[]]$Skills,
+    [switch]$Force
 )
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
@@ -25,17 +27,19 @@ if (-not $Target) {
   스킬 설치 - 전역 또는 특정 프로젝트에 스킬을 설치합니다.
 
   사용법:
-    .\install-skills.ps1 -Target <global|경로> [-Platform <claude|cursor>] [-Skills <스킬,...>]
+    .\install-skills.ps1 -Target <global|경로> [-Platform <claude|cursor>] [-Skills <스킬,...>] [-Force]
 
   파라미터:
     -Target     설치 대상. "global" (전역) 또는 프로젝트 경로 (필수)
     -Platform   소스 플랫폼. claude(기본) 또는 cursor
     -Skills     설치할 스킬 이름. 생략 시 전체 스킬 설치
+    -Force      이미 설치된 스킬을 삭제 후 재설치
 
   예시:
     .\install-skills.ps1 -Target global                              # .claude 전체 스킬을 전역에 설치
     .\install-skills.ps1 -Target global -Platform cursor             # .cursor 전체 스킬을 전역에 설치
     .\install-skills.ps1 -Target global -Skills git-mr-review        # 특정 스킬만 전역 설치
+    .\install-skills.ps1 -Target global -Skills git-mr-review -Force # 강제 재설치
     .\install-skills.ps1 -Target D:\Projects\myapp                   # 특정 프로젝트에 설치
     .\install-skills.ps1 -Target D:\Projects\myapp -Platform cursor -Skills git-mr-review,wiki-page-summarizer
 
@@ -47,7 +51,15 @@ $SharedDir = Join-Path $RepoRoot "shared"
 $SharedScripts = Join-Path $SharedDir "scripts"
 $SharedEnv = Join-Path $SharedDir ".env"
 
-$ScriptSkills = @("git-mr-review", "google-forms-viewer", "jira-filter-summarizer", "wiki-page-summarizer")
+# 스킬 → 공유 스크립트 매핑
+# 단순 매핑: skill/scripts/ → shared/scripts/<skill>/
+$SimpleScriptSkills = @("git-mr-review", "google-forms-viewer")
+# 서비스별 매핑: skill/scripts/<service>/ → shared/scripts/<service>/
+$ServiceScriptSkills = @{
+    "jira-filter-summarizer" = @("jira")
+    "jira-bug-analyzer"      = @("jira")
+    "wiki-page-summarizer"   = @("jira", "confluence")
+}
 
 $PlatformSkillsDir = Join-Path $RepoRoot ".$Platform\skills"
 $AllSkills = Get-ChildItem $PlatformSkillsDir -Directory | Select-Object -ExpandProperty Name
@@ -118,19 +130,53 @@ if (Test-Path $SharedEnv) {
 }
 
 # 스킬
+$installedCount = 0
+$skippedCount = 0
+
 foreach ($skill in $Skills) {
-    Write-Host "`n[$skill]" -ForegroundColor Yellow
     $srcSkillDir = Join-Path $PlatformSkillsDir $skill
     $dstSkillDir = Join-Path $TargetSkillsDir $skill
+    $dstSkillMd = Join-Path $dstSkillDir "SKILL.md"
+
+    # 이미 설치 여부 확인
+    if ((Test-Path $dstSkillMd) -and -not $Force) {
+        Write-Host "  [skip] $skill — 이미 설치됨 (재설치: -Force 옵션 사용)" -ForegroundColor DarkGray
+        $skippedCount++
+        continue
+    }
+
+    Write-Host "`n[$skill]" -ForegroundColor Yellow
+
+    # -Force: 기존 scripts 디렉토리 삭제 후 재설치
+    if ($Force) {
+        $dstScripts = Join-Path $dstSkillDir "scripts"
+        if (Test-Path $dstScripts) {
+            Remove-Item $dstScripts -Recurse -Force
+            Write-Host "  [clean] scripts 삭제" -ForegroundColor DarkYellow
+        }
+    }
 
     $skillMd = Join-Path $srcSkillDir "SKILL.md"
     if (Test-Path $skillMd) {
-        Copy-Safe (Join-Path $dstSkillDir "SKILL.md") $skillMd
+        Copy-Safe $dstSkillMd $skillMd
     }
 
-    if ($skill -in $ScriptSkills) {
+    if ($skill -in $SimpleScriptSkills) {
         New-JunctionSafe (Join-Path $dstSkillDir "scripts") (Join-Path $SharedScripts $skill)
+    } elseif ($ServiceScriptSkills.ContainsKey($skill)) {
+        $scriptsDir = Join-Path $dstSkillDir "scripts"
+        if (-not (Test-Path $scriptsDir)) { New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null }
+        foreach ($svc in $ServiceScriptSkills[$skill]) {
+            New-JunctionSafe (Join-Path $scriptsDir $svc) (Join-Path $SharedScripts $svc)
+        }
     }
+
+    $installedCount++
 }
 
-Write-Host "`n완료." -ForegroundColor Cyan
+# 결과 요약
+if ($skippedCount -gt 0 -and $installedCount -eq 0) {
+    Write-Host "`n모든 스킬이 이미 설치되어 있습니다. 재설치하려면 -Force 옵션을 사용하세요." -ForegroundColor DarkYellow
+} else {
+    Write-Host "`n완료. (설치: $installedCount, 건너뜀: $skippedCount)" -ForegroundColor Cyan
+}

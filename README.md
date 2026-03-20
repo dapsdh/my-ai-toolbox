@@ -53,6 +53,18 @@ copy shared\.env.example shared\.env
 .\install-skills.ps1 -Target D:\Projects\myapp -Skills git-mr-review,wiki-page-summarizer
 ```
 
+### 재설치 (스킬 업데이트)
+
+이미 설치된 스킬은 기본적으로 건너뜁니다. 저장소를 `git pull`한 뒤 스킬을 업데이트하려면 `-Force` 옵션을 사용하세요. `-Force`는 기존 scripts 디렉토리를 삭제하고 SKILL.md와 junction을 다시 생성합니다.
+
+```powershell
+# 특정 스킬 재설치
+.\install-skills.ps1 -Target global -Skills jira-bug-analyzer -Force
+
+# 전체 스킬 재설치
+.\install-skills.ps1 -Target global -Force
+```
+
 ---
 
 ## 스킬 목록

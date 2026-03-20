@@ -22,7 +22,7 @@ allowed-tools: Bash, Grep, Glob, Read
 1. URL에서 이슈 키 추출 (예: `.../browse/PROJ-123` → `PROJ-123`).
 2. 다음 명령으로 이슈 상세(제목, 설명, 상태 등)를 가져온다.
    ```bash
-   python .claude/skills/wiki-page-summarizer/scripts/fetch_jira_issue.py <이슈키 또는 URL>
+   python .claude/skills/jira-bug-analyzer/scripts/jira/fetch_jira_issue.py <이슈키 또는 URL>
    ```
    출력을 1단계(분석)의 입력으로 사용한다.
 

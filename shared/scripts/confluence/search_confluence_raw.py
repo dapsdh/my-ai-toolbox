@@ -7,19 +7,22 @@ from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 from base64 import b64encode
 
-# .env 로드: 프로젝트 루트(.ai)만
-base = Path(os.path.abspath(__file__)).parent
-skill_dir = base.parent
-root = skill_dir.parent.parent
-env_path = root / ".env"
-if env_path.is_file():
-    for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
-        line = line.strip()
-        if line and not line.startswith("#") and "=" in line:
-            k, v = line.split("=", 1)
-            k, v = k.strip(), v.strip().strip('"').strip("'")
-            if k and v and k not in os.environ:
-                os.environ[k] = v
+# .env 로드: 상위 디렉토리를 탐색해 .env 파일을 찾음
+_d = Path(os.path.abspath(__file__)).parent
+for _ in range(8):
+    _env_path = _d / ".env"
+    if _env_path.is_file():
+        for line in _env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                k, v = k.strip(), v.strip().strip('"').strip("'")
+                if k and v and k not in os.environ:
+                    os.environ[k] = v
+        break
+    if _d == _d.parent:
+        break
+    _d = _d.parent
 
 BASE = (os.environ.get("ATLASSIAN_BASE_URL") or "").rstrip("/")
 WIKI = BASE + "/wiki" if "/wiki" not in BASE else BASE

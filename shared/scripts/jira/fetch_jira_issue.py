@@ -22,20 +22,23 @@ if sys.platform == "win32":
         pass
 
 def _load_dotenv():
-    base = Path(os.path.abspath(__file__)).parent
-    skill_dir = base.parent
-    root = skill_dir.parent.parent
-    env_path = root / ".env"
-    if env_path.is_file():
-        for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if "=" in line:
-                k, v = line.split("=", 1)
-                k, v = k.strip(), v.strip().strip('"').strip("'")
-                if k and v and k not in os.environ:
-                    os.environ[k] = v
+    d = Path(os.path.abspath(__file__)).parent
+    for _ in range(8):
+        env_path = d / ".env"
+        if env_path.is_file():
+            for line in env_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    k, v = line.split("=", 1)
+                    k, v = k.strip(), v.strip().strip('"').strip("'")
+                    if k and v and k not in os.environ:
+                        os.environ[k] = v
+            return
+        if d == d.parent:
+            break
+        d = d.parent
 
 _load_dotenv()
 

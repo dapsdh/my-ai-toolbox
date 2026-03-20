@@ -32,10 +32,10 @@ allowed-tools: Bash
 2. **결과 판단**
    - **200 + 본문 내용 있음** → 2단계(파싱·정리)로 진행.
    - **로그인 페이지 / 401·403 / JavaScript 로그인 요구** → **인증 경로 사용**:
-     - **Jira 이슈 URL** (예: `.../browse/HCDOQ-1313`): 이슈 키 추출 후 `python .claude/skills/wiki-page-summarizer/scripts/fetch_jira_issue.py <이슈키>` 실행.
+     - **Jira 이슈 URL** (예: `.../browse/HCDOQ-1313`): 이슈 키 추출 후 `python .claude/skills/wiki-page-summarizer/scripts/jira/fetch_jira_issue.py <이슈키>` 실행.
      - **Confluence URL** (예: `.../wiki/.../pages/1997013274/...`): 페이지 ID 추출 후
-       - **해당 페이지만 요약** → `python .claude/skills/wiki-page-summarizer/scripts/fetch_confluence_page.py <URL 또는 페이지ID>`
-       - **하위 페이지까지 요약** → `python .claude/skills/wiki-page-summarizer/scripts/fetch_confluence_page.py <URL 또는 페이지ID> --with-children`
+       - **해당 페이지만 요약** → `python .claude/skills/wiki-page-summarizer/scripts/confluence/fetch_confluence_page.py <URL 또는 페이지ID>`
+       - **하위 페이지까지 요약** → `python .claude/skills/wiki-page-summarizer/scripts/confluence/fetch_confluence_page.py <URL 또는 페이지ID> --with-children`
      - 스크립트 실패(인증 오류 등) 시: "프로젝트 루트(.ai)의 .env에 ATLASSIAN_USER(이메일)와 ATLASSIAN_API_TOKEN이 올바른지 확인해 주세요." 안내. 그래도 안 되면 **본문을 복사해 붙여넣어 달라**고 요청한다.
 
 ## 2. 내용 파싱 및 정리

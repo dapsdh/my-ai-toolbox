@@ -13,7 +13,15 @@ $SharedScripts = Join-Path $SharedDir "scripts"
 $SharedEnv = Join-Path $SharedDir ".env"
 $SharedEnvExample = Join-Path $SharedDir ".env.example"
 
-$ScriptSkills = @("git-mr-review", "google-forms-viewer", "jira-filter-summarizer", "wiki-page-summarizer")
+# 스킬 → 공유 스크립트 디렉토리 매핑
+# scripts/ 바로 아래에 junction: skill/scripts/ → shared/scripts/<name>/
+$SimpleScriptSkills = @("git-mr-review", "google-forms-viewer")
+# scripts/ 아래에 서비스별 하위 junction: skill/scripts/jira/ → shared/scripts/jira/ 등
+$ServiceScriptSkills = @{
+    "jira-filter-summarizer" = @("jira")
+    "jira-bug-analyzer"      = @("jira")
+    "wiki-page-summarizer"   = @("jira", "confluence")
+}
 
 function New-JunctionSafe($Path, $Target) {
     if (Test-Path $Path) {
@@ -48,10 +56,25 @@ foreach ($platform in @(".claude", ".cursor")) {
     }
     New-HardLinkSafe (Join-Path $platformDir ".env.example") $SharedEnvExample
 
-    foreach ($skill in $ScriptSkills) {
+    # 단순 매핑: skill/scripts/ → shared/scripts/<skill>/
+    foreach ($skill in $SimpleScriptSkills) {
         $skillDir = Join-Path $platformDir "skills\$skill"
         if (Test-Path $skillDir) {
             New-JunctionSafe (Join-Path $skillDir "scripts") (Join-Path $SharedScripts $skill)
+        }
+    }
+
+    # 서비스별 매핑: skill/scripts/<service>/ → shared/scripts/<service>/
+    foreach ($skill in $ServiceScriptSkills.Keys) {
+        $skillDir = Join-Path $platformDir "skills\$skill"
+        if (Test-Path $skillDir) {
+            $scriptsDir = Join-Path $skillDir "scripts"
+            if (-not (Test-Path $scriptsDir)) {
+                New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+            }
+            foreach ($svc in $ServiceScriptSkills[$skill]) {
+                New-JunctionSafe (Join-Path $scriptsDir $svc) (Join-Path $SharedScripts $svc)
+            }
         }
     }
 }

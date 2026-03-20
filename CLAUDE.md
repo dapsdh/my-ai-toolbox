@@ -39,16 +39,20 @@ Skills are defined under each platform directory (`.claude/skills/`, `.cursor/sk
 
 ## Architecture
 
-- **`shared/`** — Shared resources: Python scripts (`scripts/<skill>/`) and `.env` credentials
-- **`.claude/`** — Claude Code platform: SKILL.md definitions, `.env` → `../shared/.env` (symlink), `scripts/` → `shared/scripts/<skill>/` (symlink)
-- **`.cursor/`** — Cursor platform: same structure as `.claude/`, symlinks to `shared/`
+- **`shared/`** — Shared resources: `.env` credentials and Python scripts organized by service:
+  - `scripts/jira/` — Jira API scripts (`fetch_jira_issue.py`, `summarize_jira_filter.py`)
+  - `scripts/confluence/` — Confluence API scripts (`fetch_confluence_page.py`, `search_confluence_raw.py`)
+  - `scripts/git-mr-review/` — GitLab MR diff fetcher
+  - `scripts/google-forms-viewer/` — Google Forms fetcher
+- **`.claude/`** — Claude Code platform: SKILL.md definitions, `.env` → `../shared/.env` (hardlink), `scripts/<service>/` → `shared/scripts/<service>/` (junction)
+- **`.cursor/`** — Cursor platform: same structure as `.claude/`, junctions to `shared/`
 - Scripts use only Python stdlib (urllib) except `google-forms-viewer` which requires the Google client library
 
 ## Adding or Modifying Skills
 
 1. Create/update `SKILL.md` under `.claude/skills/<name>/` (or `.cursor/skills/<name>/`) with trigger, workflow steps, and output format
-2. If a Python script is needed, place it in `shared/scripts/<name>/` and create symlinks from each platform's `skills/<name>/scripts/`
-3. Implement `_load_dotenv()` using `os.path.abspath(__file__)` (not `Path.resolve()`) to preserve symlink paths
+2. If a Python script is needed, place it in the appropriate `shared/scripts/<service>/` directory (e.g., `jira/`, `confluence/`) and create junctions from each platform's `skills/<name>/scripts/<service>/`
+3. Implement `_load_dotenv()` by searching parent directories for `.env` (using `os.path.abspath(__file__)`, not `Path.resolve()`, to preserve symlink paths)
 3. Ensure Windows UTF-8 compatibility if the script prints Unicode:
    ```python
    if sys.platform == "win32":
