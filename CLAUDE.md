@@ -33,7 +33,7 @@ Skills are defined under each platform directory (`.claude/skills/`, `.cursor/sk
 | `/git-commit` | `/git-commit [issue-branch]` | Auto-generates and commits staged changes |
 | `/jira-filter-summarizer` | `<filter URL> 요약해줘` | Summarizes all issues in a Jira filter |
 | `/wiki-page-summarizer` | `<page URL> 요약해줘` | Summarizes a Jira issue or Confluence page; add `하위 페이지까지` to recurse into child pages |
-| `/jira-issue-debug` | `<issue URL> 문제코드를 찾아줘` | Finds problem code in the codebase for a Jira bug |
+| `/jira-bug-analyzer` | `<issue URL> 문제코드를 찾아줘` | Finds problem code in the codebase for a Jira bug |
 | `/git-mr-review` | `<MR URL> 코드 리뷰 해줘` | Structured code review for a GitLab MR |
 | `/google-forms-viewer` | `<form URL> 접속해줘` | Displays Google Form questions and responses |
 

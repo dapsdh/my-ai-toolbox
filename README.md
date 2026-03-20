@@ -71,7 +71,7 @@ copy shared\.env.example shared\.env
 - **트리거 예**: `<페이지 링크> 요약해줘`, `<페이지 링크> 하위 페이지까지 요약해줘`
 - **인증**: 스킬 디렉터리 `.env`에 `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN` 등 설정.
 
-### jira-issue-debug
+### jira-bug-analyzer
 
 - **설명**: Jira 이슈 URL과 함께 "문제코드를 찾아줘" 또는 "디버깅해줘"를 주면, 이슈 설명을 분석하고 수정이 필요하면 코드베이스에서 문제 코드를 찾아 수정 방안을 제안합니다. 수정이 불필요한 이슈면 그 이유를 설명합니다.
 - **트리거 예**: `https://example.atlassian.net/browse/PROJ-123 문제코드를 찾아줘`
@@ -96,7 +96,7 @@ copy shared\.env.example shared\.env
 **환경 변수는 `shared/.env`에서 공동 관리합니다.** 각 플랫폼 디렉토리의 `.env`는 `shared/.env`에 대한 symlink입니다.
 
 - `shared/.env.example`을 복사해 `shared/.env`를 만든 뒤, 사용하는 스킬에 맞게 값을 채우면 됩니다.
-- **Atlassian** (jira-filter-summarizer, wiki-page-summarizer, jira-issue-debug): `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN`, (선택) `COMMIT_AUTHOR_NAMES`
+- **Atlassian** (jira-filter-summarizer, wiki-page-summarizer, jira-bug-analyzer): `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN`, (선택) `COMMIT_AUTHOR_NAMES`
 - **GitLab** (git-mr-review): `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN`, (선택) `GITLAB_HOST`
 - **Google** (google-forms-viewer): `GOOGLE_APPLICATION_CREDENTIALS` 또는 OAuth용 `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 - `.env`는 Git에 포함되지 않도록 되어 있으므로, 클론 후 사용 전에 직접 설정해야 합니다.

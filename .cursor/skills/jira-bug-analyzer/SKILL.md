@@ -1,5 +1,5 @@
 ---
-name: jira-issue-debug
+name: jira-bug-analyzer
 description: Accepts a Jira issue URL plus "문제코드를 찾아줘" or "디버깅해줘", then analyzes the issue description, finds problem code if it is a fixable bug, and suggests fixes. Use when the user pastes a Jira issue link and asks to find problem code or debug ("문제코드를 찾아줘", "디버깅해줘"). Uses project root .env for Jira auth.
 ---
 

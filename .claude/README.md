@@ -11,7 +11,7 @@ Claude Code 전용 설정 디렉토리입니다.
     ├── git-mr-review/              # /git-mr-review
     ├── google-forms-viewer/        # /google-forms-viewer
     ├── jira-filter-summarizer/     # /jira-filter-summarizer
-    ├── jira-issue-debug/           # /jira-issue-debug
+    ├── jira-bug-analyzer/           # /jira-bug-analyzer
     └── wiki-page-summarizer/       # /wiki-page-summarizer
 ```
 
@@ -23,7 +23,7 @@ Claude Code 전용 설정 디렉토리입니다.
 | `/git-mr-review` | GitLab MR URL을 받아 diff를 조회하고 코드 리뷰를 수행합니다. |
 | `/google-forms-viewer` | Google Forms URL을 받아 문항과 응답을 표시합니다. |
 | `/jira-filter-summarizer` | Jira 필터 URL을 받아 이슈 목록을 요약합니다. |
-| `/jira-issue-debug` | Jira 이슈 URL을 받아 문제 코드를 찾고 수정 방안을 제안합니다. |
+| `/jira-bug-analyzer` | Jira 이슈 URL을 받아 문제 코드를 찾고 수정 방안을 제안합니다. |
 | `/wiki-page-summarizer` | Jira/Confluence 페이지 URL을 받아 내용을 정리합니다. |
 
 ## 사용법
@@ -34,7 +34,7 @@ Claude Code 전용 설정 디렉토리입니다.
 /git-commit
 /git-mr-review https://gitlab.example.com/.../merge_requests/23
 /jira-filter-summarizer https://example.atlassian.net/issues/?filter=12345
-/jira-issue-debug https://example.atlassian.net/browse/PROJ-123
+/jira-bug-analyzer https://example.atlassian.net/browse/PROJ-123
 /wiki-page-summarizer https://example.atlassian.net/wiki/.../pages/...
 /google-forms-viewer https://docs.google.com/forms/d/.../viewform
 ```
