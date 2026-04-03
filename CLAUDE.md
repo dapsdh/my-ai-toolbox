@@ -16,6 +16,7 @@ Credentials live in `shared/.env` (symlinked into each platform directory). Copy
 - `GITLAB_PRIVATE_TOKEN` (or `GITLAB_ACCESS_TOKEN`), optionally `GITLAB_HOST` — for GitLab MR review
 - `GOOGLE_APPLICATION_CREDENTIALS` or `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`/`GOOGLE_REFRESH_TOKEN` — for Google Forms
 - `COMMIT_AUTHOR_NAMES` (optional, comma-separated) — GitLab bot display names to classify as code commits in jira-filter-summarizer
+- `CONFLUENCE_PAGE_URL` — target Confluence page URL for save-article skill
 
 For Google Forms, install the required Python packages:
 ```bash
@@ -36,6 +37,8 @@ Skills are defined under each platform directory (`.claude/skills/`, `.cursor/sk
 | `/jira-bug-analyzer` | `<issue URL> 문제코드를 찾아줘` | Finds problem code in the codebase for a Jira bug |
 | `/git-mr-review` | `<MR URL> 코드 리뷰 해줘` | Structured code review for a GitLab MR |
 | `/google-forms-viewer` | `<form URL> 접속해줘` | Displays Google Form questions and responses |
+| `/create-my-skill` | `스킬 만들어줘` | Interactively creates and validates a new SKILL.md |
+| `/save-article` | `<article URL> 아티클 저장` | Extracts title/summary from a URL and appends to a Confluence page |
 
 ## Architecture
 

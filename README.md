@@ -101,6 +101,18 @@ copy shared\.env.example shared\.env
 - **트리거 예**: `https://gitlab.example.com/.../merge_requests/23/diffs 코드 리뷰 해줘`
 - **인증**: 스킬 디렉터리 `.env`에 `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN` 설정.
 
+### create-my-skill
+
+- **설명**: 대화형으로 Claude Code 스킬(SKILL.md)을 생성하고 품질 검증까지 수행합니다. 스킬 이름과 사용 예시를 입력하면 SKILL.md와 README.md를 자동 생성하고, 5가지 기준(트리거 명확성, 예시 포함, 구조 완결성, 지시 명확성, 500줄 이하)으로 검증합니다.
+- **트리거 예**: `/create-my-skill`, `스킬 만들어줘`, `새 스킬 생성`
+- **인증**: 없음 (별도 환경 변수 불필요)
+
+### save-article
+
+- **설명**: 웹 URL을 입력받아 페이지의 제목과 요약을 추출한 뒤, 지정된 Confluence 페이지 하단에 링크와 요약을 추가합니다. 동일 URL이 이미 있으면 해당 섹션 바로 아래에 삽입하여 비교할 수 있게 합니다.
+- **트리거 예**: `/save-article https://example.com/article`, `아티클 저장`, `이 글 저장해줘`
+- **인증**: 스킬 디렉터리 `.env`에 Atlassian 인증 정보 + `CONFLUENCE_PAGE_URL` 설정.
+
 ---
 
 ## 인증·환경 변수
@@ -108,7 +120,7 @@ copy shared\.env.example shared\.env
 **환경 변수는 `shared/.env`에서 공동 관리합니다.** 각 플랫폼 디렉토리의 `.env`는 `shared/.env`에 대한 symlink입니다.
 
 - `shared/.env.example`을 복사해 `shared/.env`를 만든 뒤, 사용하는 스킬에 맞게 값을 채우면 됩니다.
-- **Atlassian** (jira-filter-summarizer, wiki-page-summarizer, jira-bug-analyzer): `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN`, (선택) `COMMIT_AUTHOR_NAMES`
+- **Atlassian** (jira-filter-summarizer, wiki-page-summarizer, jira-bug-analyzer, save-article): `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN`, (선택) `COMMIT_AUTHOR_NAMES`, (save-article 전용) `CONFLUENCE_PAGE_URL`
 - **GitLab** (git-mr-review): `GITLAB_PRIVATE_TOKEN` 또는 `GITLAB_ACCESS_TOKEN`, (선택) `GITLAB_HOST`
 - **Google** (google-forms-viewer): `GOOGLE_APPLICATION_CREDENTIALS` 또는 OAuth용 `GOOGLE_REFRESH_TOKEN`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
 - `.env`는 Git에 포함되지 않도록 되어 있으므로, 클론 후 사용 전에 직접 설정해야 합니다.
