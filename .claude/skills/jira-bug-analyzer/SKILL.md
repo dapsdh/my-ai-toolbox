@@ -15,7 +15,7 @@ allowed-tools: Bash, Grep, Glob, Read
 
 - Jira 인증은 **프로젝트 루트(.ai)의 `.env`**에서 로드한다.
 - **필수 변수**: `ATLASSIAN_BASE_URL`, `ATLASSIAN_USER`, `ATLASSIAN_API_TOKEN`
-- 인증이 없거나 API 호출이 실패하면 "프로젝트 루트(.ai)의 .env에 ATLASSIAN_USER(이메일)와 ATLASSIAN_API_TOKEN을 설정해 주세요" 안내 후, 사용자에게 이슈 설명을 직접 붙여넣어 달라고 요청할 수 있다.
+- 인증이 없거나 API 호출이 실패하면 ".env에 ATLASSIAN_USER(이메일)와 ATLASSIAN_API_TOKEN을 설정해 주세요" 안내 후, 사용자에게 이슈 설명을 직접 붙여넣어 달라고 요청할 수 있다.
 
 ## 이슈 내용 가져오기
 
