@@ -49,7 +49,13 @@
       "Bash(powershell -Command '$content = Get-Content \"\"D:\\\\Projects\\\\.ai\\\\setup.ps1\"\" -Raw -Encoding UTF8; $bom = [System.Text.UTF8Encoding]::new\\($true\\); [System.IO.File]::WriteAllText\\(\"\"D:\\\\Projects\\\\.ai\\\\setup.ps1\"\", $content, $bom\\)')",
       "Bash(powershell -Command ':*)",
       "Bash(powershell -Command '$c = Get-Content \"\"setup.ps1\"\" -Raw -Encoding UTF8; [System.IO.File]::WriteAllText\\(\\(Resolve-Path \"\"setup.ps1\"\"\\).Path, $c, [System.Text.UTF8Encoding]::new\\($true\\)\\); $c = Get-Content \"\"install-skills.ps1\"\" -Raw -Encoding UTF8; [System.IO.File]::WriteAllText\\(\\(Resolve-Path \"\"install-skills.ps1\"\"\\).Path, $c, [System.Text.UTF8Encoding]::new\\($true\\)\\)')",
-      "Bash(powershell -Command '$c = Get-Content \"\"install-skills.ps1\"\" -Raw -Encoding UTF8; [System.IO.File]::WriteAllText\\(\\(Resolve-Path \"\"install-skills.ps1\"\"\\).Path, $c, [System.Text.UTF8Encoding]::new\\($true\\)\\)')"
+      "Bash(powershell -Command '$c = Get-Content \"\"install-skills.ps1\"\" -Raw -Encoding UTF8; [System.IO.File]::WriteAllText\\(\\(Resolve-Path \"\"install-skills.ps1\"\"\\).Path, $c, [System.Text.UTF8Encoding]::new\\($true\\)\\)')",
+      "Read(//c/Users/Sanghee/.claude/plugins/**)",
+      "Read(//c/Users/Sanghee/.claude/skills/**)",
+      "Bash(python *)",
+      "Bash(mkdir -p C:/Users/Sanghee/AppData/Local/Temp/agent-log-analyzer/HCDOQ-1356)",
+      "Read(//c/Users/Sanghee/AppData/Local/Temp/**)",
+      "Bash(git *)"
     ]
   }
 }

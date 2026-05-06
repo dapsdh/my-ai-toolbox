@@ -113,6 +113,12 @@ copy shared\.env.example shared\.env
 - **트리거 예**: `/save-article https://example.com/article`, `아티클 저장`, `이 글 저장해줘`
 - **인증**: 스킬 디렉터리 `.env`에 Atlassian 인증 정보 + `CONFLUENCE_PAGE_URL` 설정.
 
+### install-gstack
+
+- **설명**: Garry Tan의 [gstack](https://github.com/garrytan/gstack)을 현재 프로젝트(또는 글로벌)에 설치하고, gstack 워크플로우(Think→Plan→Build→Review→Test→Ship→Reflect) 기준으로 CLAUDE.md를 갱신합니다. 기존 CLAUDE.md가 있으면 `CLAUDE.md.before-gstack`으로 백업하고 새 CLAUDE.md 끝에 요약을 붙입니다. 선택적으로 [GBrain](https://github.com/garrytan/gbrain)까지 함께 설치하고 Claude Code MCP에 등록합니다.
+- **트리거 예**: `/install-gstack`, `gstack 설치`, `gstack 환경 만들어줘`
+- **인증**: 없음 (별도 환경 변수 불필요). Claude Code CLI, Bun 1.0+, Git 필요.
+
 ---
 
 ## 인증·환경 변수

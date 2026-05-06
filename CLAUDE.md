@@ -39,6 +39,7 @@ Skills are defined under each platform directory (`.claude/skills/`, `.cursor/sk
 | `/google-forms-viewer` | `<form URL> 접속해줘` | Displays Google Form questions and responses |
 | `/create-my-skill` | `스킬 만들어줘` | Interactively creates and validates a new SKILL.md |
 | `/save-article` | `<article URL> 아티클 저장` | Extracts title/summary from a URL and appends to a Confluence page |
+| `/install-gstack` | `gstack 설치` | Installs Garry Tan's gstack into the project and updates CLAUDE.md (existing CLAUDE.md is summarized and appended) |
 
 ## Architecture
 
