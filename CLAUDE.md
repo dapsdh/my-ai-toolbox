@@ -39,7 +39,9 @@ Skills are defined under each platform directory (`.claude/skills/`, `.cursor/sk
 | `/google-forms-viewer` | `<form URL> 접속해줘` | Displays Google Form questions and responses |
 | `/create-my-skill` | `스킬 만들어줘` | Interactively creates and validates a new SKILL.md |
 | `/save-article` | `<article URL> 아티클 저장` | Extracts title/summary from a URL and appends to a Confluence page |
-| `/install-gstack` | `gstack 설치` | Installs Garry Tan's gstack into the project and updates CLAUDE.md (existing CLAUDE.md is summarized and appended) |
+| `/install-gstack` | `gstack 설치` | Installs Garry Tan's gstack globally (`~/.claude/skills/gstack`) once. Idempotent — skips if already installed. Does not modify project CLAUDE.md. |
+| `/install-gbrain` | `gbrain 설치` | Installs Garry Tan's GBrain globally (idempotent), registers MCP, optionally sets dream-cycle cron and imports notes |
+| `/gbrain-upgrade` | `gbrain 업데이트` | Re-runs `bun add -g github:garrytan/gbrain` to pull latest, then `gbrain doctor` for health and migration check (matches gstack's bundled `/gstack-upgrade` naming) |
 
 ## Architecture
 

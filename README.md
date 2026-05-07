@@ -115,9 +115,21 @@ copy shared\.env.example shared\.env
 
 ### install-gstack
 
-- **설명**: Garry Tan의 [gstack](https://github.com/garrytan/gstack)을 현재 프로젝트(또는 글로벌)에 설치하고, gstack 워크플로우(Think→Plan→Build→Review→Test→Ship→Reflect) 기준으로 CLAUDE.md를 갱신합니다. 기존 CLAUDE.md가 있으면 `CLAUDE.md.before-gstack`으로 백업하고 새 CLAUDE.md 끝에 요약을 붙입니다. 선택적으로 [GBrain](https://github.com/garrytan/gbrain)까지 함께 설치하고 Claude Code MCP에 등록합니다.
-- **트리거 예**: `/install-gstack`, `gstack 설치`, `gstack 환경 만들어줘`
+- **설명**: Garry Tan의 [gstack](https://github.com/garrytan/gstack)을 **글로벌 1회**(`~/.claude/skills/gstack`) 설치합니다. `./setup`이 내부 스킬을 `~/.claude/skills/<skill>/`로 심링크하여 `/office-hours`, `/autoplan`, `/review`, `/qa`, `/ship` 등 23+개 슬래시 커맨드가 모든 프로젝트에서 사용 가능해집니다. **idempotent** — 이미 설치돼 있으면 자동으로 건너뜁니다. 프로젝트별 설정(team 부트스트랩, CLAUDE.md 갱신)은 다루지 않습니다.
+- **트리거 예**: `/install-gstack`, `gstack 설치`, `gstack 깔아줘`
 - **인증**: 없음 (별도 환경 변수 불필요). Claude Code CLI, Bun 1.0+, Git 필요.
+
+### install-gbrain
+
+- **설명**: Garry Tan의 [GBrain](https://github.com/garrytan/gbrain)(개인 두뇌, MCP 서버)을 **글로벌 1회** 설치하고 Claude Code MCP 레지스트리에 등록합니다. 이미 설치/등록된 부분은 자동으로 건너뛰는 idempotent 흐름입니다. 선택적으로 Dream Cycle 야간 cron 등록과 초기 노트 import 까지 한 번에 처리합니다.
+- **트리거 예**: `/install-gbrain`, `gbrain 설치`, `두뇌 설치`
+- **인증**: 없음 (별도 환경 변수 불필요). Claude Code CLI, Bun 1.0+ 필요.
+
+### gbrain-upgrade
+
+- **설명**: 글로벌 설치된 GBrain을 GitHub 최신으로 업데이트합니다. `bun add -g github:garrytan/gbrain` 을 다시 실행하여 깃 URL 패키지를 새로 받고, `gbrain doctor --json` 으로 헬스 체크와 DB 마이그레이션 필요 여부를 확인합니다. gstack 자체는 번들 슬래시 커맨드 `/gstack-upgrade` 가 있으므로 별도 스킬을 두지 않고, 이름은 그와 짝을 맞춰 `gbrain-upgrade` 로 두었습니다.
+- **트리거 예**: `/gbrain-upgrade`, `gbrain 업데이트`, `gbrain 최신으로`
+- **인증**: 없음. Bun 1.0+, Claude Code CLI 필요.
 
 ---
 

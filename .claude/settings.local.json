@@ -55,7 +55,8 @@
       "Bash(python *)",
       "Bash(mkdir -p C:/Users/Sanghee/AppData/Local/Temp/agent-log-analyzer/HCDOQ-1356)",
       "Read(//c/Users/Sanghee/AppData/Local/Temp/**)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "PowerShell(git add *)"
     ]
   }
 }
