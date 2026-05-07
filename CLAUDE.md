@@ -70,3 +70,12 @@ Skills are defined under each platform directory (`.claude/skills/`, `.cursor/sk
 Format: `[scope] verb summary` (scope optional for broad changes)
 Verbs: `add` (new), `update` (enhance), `fix` (bug), `remove`, `refactor`, `docs`
 Language: Korean if the changed content is Korean, otherwise English. Max 72 chars per line.
+
+## GBrain 연동
+
+이 프로젝트는 GBrain(MCP 서버 `gbrain`)에 연결되어 있다.
+
+- `gbrain import <경로>` — 노트/문서 가져오기
+- `gbrain embed --stale` — 임베딩 동기화
+- `gbrain query "<질문>"` — 의미 기반 검색
+- 야간 정기 작업: `0 3 * * * gbrain dream-cycle`
